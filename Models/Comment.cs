@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using CoderHive.Enums;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace CoderHive.Models
@@ -38,6 +39,10 @@ namespace CoderHive.Models
         [StringLength(500, ErrorMessage = "The {0} must be at least {2} and nomore than {1}", MinimumLength = 2)]
         [Display(Name = "Moderated Comment")]
         public string? ModeratedBody { get; set; }
+
+        public ModerationType ModerationType { get; set; }
+
+        public int MyProperty { get; set; }
 
         // Navigation Properties
 
