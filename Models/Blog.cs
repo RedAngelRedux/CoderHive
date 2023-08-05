@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,11 +7,12 @@ namespace CoderHive.Models
 {
     public class Blog
     {
-
+        // Key Properties
         public int Id { get; set; }
 
         public string AuthorId { get; set; }
 
+        // Class Properties
         [Required]
         [StringLength(100,ErrorMessage="The {0} must be at least {2} and at most {1} characters",MinimumLength=2)]
         public string Name { get; set; }
@@ -35,6 +37,11 @@ namespace CoderHive.Models
 
         [NotMapped]
         public IFormFile Image { get; set; }
+
+        // Navigation Properties
+        public virtual IdentityUser Author { get; set; }
+
+        public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
 
     }
 }

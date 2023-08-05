@@ -18,6 +18,8 @@ namespace CoderHive.Models
         public string Text { get; set; }
 
         // Navigation Properies
+
+        // Child of...
         public virtual Post Post { get; set; }
 
         public virtual IdentityUser Author { get; set; }

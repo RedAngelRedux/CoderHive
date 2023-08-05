@@ -40,6 +40,8 @@ namespace CoderHive.Models
         public string? ModeratedBody { get; set; }
 
         // Navigation Properties
+
+        // Child of...
         public virtual Post Post { get; set; }
 
         public virtual IdentityUser Author { get; set; }
