@@ -24,7 +24,7 @@ namespace CoderHive.Models
         public DateTime Created { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name = "Created Date")]
+        [Display(Name = "Updated Date")]
         public DateTime? Updated { get; set; }
 
         [Display(Name="Blog Image")]
