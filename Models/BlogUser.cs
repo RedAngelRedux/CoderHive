@@ -20,34 +20,28 @@ namespace CoderHive.Models
         public string LastName { get; set; } = "";
 
         [Display(Name = "User Image")]
-        public byte[] ImageData { get; set; }
+        public byte[] ImageData { get; set; } = Array.Empty<byte>();
 
         [Display(Name = "Image Type")]
-        public string ImageType { get; set; }
+        public string ImageType { get; set; } = string.Empty;
 
         [NotMapped]
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
 
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 6)]
-        public string FacebookUrl { get; set; }
+        public string? FacebookUrl { get; set; }
 
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 6)]
-        public string TwitterUrl { get; set; }
+        public string? TwitterUrl { get; set; }
 
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 6)]
-        public string LinkedInUrl { get; set; }
+        public string? LinkedInUrl { get; set; }
 
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 6)]
-        public string GitHubUrl { get; set; }
+        public string? GitHubUrl { get; set; }
 
         [NotMapped]
-        public string FullName
-        {
-            get
-            {
-                return $"{FirstName} {LastName}";
-            }
-        }
+        public string FullName => $"{FirstName} {LastName}";
 
         // Navigation Properties
 

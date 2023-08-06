@@ -18,15 +18,15 @@ namespace CoderHive.Models
 
         // Class Properties        
         [Required]
-        [StringLength(75,ErrorMessage ="The {0} must be at least {2] and no more than {1}",MinimumLength =2)]
-        public string Title { get; set; }
+        [StringLength(75, ErrorMessage = "The {0} must be at least {2] and no more than {1}", MinimumLength = 2)]
+        public string Title { get; set; } = string.Empty;
 
         [Required]
         [StringLength(200, ErrorMessage = "The {0} must be at least {2] and no more than {1}", MinimumLength = 2)]
-        public string Abstract { get; set; }
+        public string Abstract { get; set; } = string.Empty;
 
         [Required]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
 
         [DataType(DataType.Date)]
         [Display(Name ="Created Date")]
@@ -41,13 +41,13 @@ namespace CoderHive.Models
         public string Slug { get; set; }
 
         [Display(Name = "Post Image")]
-        public byte[] ImageData { get; set; }
+        public byte[] ImageData { get; set; } = Array.Empty<byte>();
 
         [Display(Name = "Image Type")]
-        public string ImageType { get; set; }
+        public string ImageType { get; set; } = string.Empty;
 
         [NotMapped]
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
 
         // Navigation Properties
 

@@ -13,13 +13,13 @@ namespace CoderHive.Models
 
         public string AuthorId { get; set; }
 
-        public string ModeratorId { get; set; }
+        public string? ModeratorId { get; set; }
 
         // Comment Properties
         [Required]
         [StringLength(500,ErrorMessage = "The {0} must be at least {2} and nomore than {1}", MinimumLength =2)]
         [Display(Name ="Comment")]
-        public string Body { get; set; }
+        public string Body { get; set; } = string.Empty;
 
         [DataType(DataType.Date)]
         [Display(Name = "Created Date")]
@@ -51,7 +51,7 @@ namespace CoderHive.Models
 
         public virtual BlogUser Author { get; set; }
 
-        public virtual BlogUser Moderator { get; set; }
+        public virtual BlogUser? Moderator { get; set; }
 
 
 
