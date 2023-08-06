@@ -53,7 +53,7 @@ namespace CoderHive.Models
 
         // Child Of...
         public virtual Blog Blog { get; set; }
-        public virtual IdentityUser Author { get; set; }
+        public virtual BlogUser Author { get; set; }
 
         // Parent Of...
         public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
