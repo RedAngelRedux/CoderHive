@@ -38,7 +38,7 @@ namespace CoderHive.Models
 
         public PostStatus Status { get; set; }
 
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         [Display(Name = "Post Image")]
         public byte[] ImageData { get; set; } = Array.Empty<byte>();
