@@ -14,7 +14,7 @@ namespace CoderHive.Models
 
         public int BlogId { get; set; }
 
-        public string AuthorId { get; set; }
+        public string? AuthorId { get; set; }
 
         // Class Properties        
         [Required]
@@ -52,8 +52,8 @@ namespace CoderHive.Models
         // Navigation Properties
 
         // Child Of...
-        public virtual Blog Blog { get; set; }
-        public virtual BlogUser Author { get; set; }
+        public virtual Blog? Blog { get; set; }
+        public virtual BlogUser? Author { get; set; }
 
         // Parent Of...
         public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();

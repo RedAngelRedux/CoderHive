@@ -11,7 +11,7 @@ namespace CoderHive.Models
 
         public int PostId { get; set; }
 
-        public string AuthorId { get; set; }
+        public string? AuthorId { get; set; }
 
         public string? ModeratorId { get; set; }
 
@@ -47,9 +47,9 @@ namespace CoderHive.Models
         // Navigation Properties
 
         // Child of...
-        public virtual Post Post { get; set; }
+        public virtual Post? Post { get; set; }
 
-        public virtual BlogUser Author { get; set; }
+        public virtual BlogUser? Author { get; set; }
 
         public virtual BlogUser? Moderator { get; set; }
 

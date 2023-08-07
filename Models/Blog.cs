@@ -10,7 +10,7 @@ namespace CoderHive.Models
         // Key Properties
         public int Id { get; set; }
 
-        public string AuthorId { get; set; }
+        public string? AuthorId { get; set; }
 
         // Class Properties
         [Required]
@@ -39,7 +39,7 @@ namespace CoderHive.Models
         public IFormFile? Image { get; set; }
 
         // Navigation Properties
-        public virtual BlogUser Author { get; set; }
+        public virtual BlogUser? Author { get; set; }
 
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
 
