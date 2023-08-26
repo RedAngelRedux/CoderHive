@@ -50,7 +50,7 @@ namespace CoderHive.Controllers
         public IActionResult Create()
         {
             //ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Description");
+            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name");
             return View();
         }
 
