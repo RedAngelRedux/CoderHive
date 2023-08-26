@@ -49,7 +49,7 @@ namespace CoderHive.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id");
+            //ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Description");
             return View();
         }
@@ -59,17 +59,27 @@ namespace CoderHive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BlogId,AuthorId,Title,Abstract,Content,Created,Updated,Status,Slug,ImageData,ImageType")] Post post)
+        public async Task<IActionResult> Create([Bind("BlogId,PostTitle,Abstract,Content,Status,Image")] Post post)
         {
             if (ModelState.IsValid)
             {
+                // Supply additional necessary information
+                post.Created = DateTime.Now;
+
+                // Save to the database
                 _context.Add(post);
                 await _context.SaveChangesAsync();
+
+                // Forward to Successful Save Page
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", post.AuthorId);
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Description", post.BlogId);
-            return View(post);
+            else
+            {
+                // Return to Create page if ModelState is not Valid after "reloading" necessary data
+                ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Description", post.BlogId);
+
+                return View(post);
+            }
         }
 
         // GET: Posts/Edit/5

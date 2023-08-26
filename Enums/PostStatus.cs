@@ -1,4 +1,6 @@
-﻿namespace CoderHive.Enums
+﻿using System.ComponentModel;
+
+namespace CoderHive.Enums
 {
     public enum PostStatus
     {
