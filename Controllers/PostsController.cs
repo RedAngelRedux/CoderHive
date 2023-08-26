@@ -95,8 +95,7 @@ namespace CoderHive.Controllers
             {
                 return NotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", post.AuthorId);
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Description", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
             return View(post);
         }
 
@@ -105,7 +104,7 @@ namespace CoderHive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,AuthorId,Title,Abstract,Content,Created,Updated,Status,Slug,ImageData,ImageType")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Status,Image")] Post post)
         {
             if (id != post.Id)
             {
@@ -116,6 +115,8 @@ namespace CoderHive.Controllers
             {
                 try
                 {
+                    post.Updated = DateTime.Now;
+
                     _context.Update(post);
                     await _context.SaveChangesAsync();
                 }
