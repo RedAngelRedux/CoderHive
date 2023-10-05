@@ -10314,7 +10314,7 @@ textarea {
   .site-cover .post-meta {
     color: #fff; }
   .site-cover, .site-cover .same-height {
-    padding: 3em 0; }
+    padding: 1em 0; }
   .site-cover.single-page h1, .site-cover.single-page .h1 {
     color: #fff;
     font-size: clamp(2rem, 3vw, 5rem); }

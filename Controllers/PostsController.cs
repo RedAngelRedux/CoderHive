@@ -29,21 +29,22 @@ namespace CoderHive.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Posts == null)
-            {
-                return NotFound();
-            }
+            //if (id == null || _context.Posts == null)
+            //{
+            //    return NotFound();
+            //}
 
-            var post = await _context.Posts
-                .Include(p => p.Author)
-                .Include(p => p.Blog)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
+            //var post = await _context.Posts
+            //    .Include(p => p.Author)
+            //    .Include(p => p.Blog)
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            //if (post == null)
+            //{
+            //    return NotFound();
+            //}
 
-            return View(post);
+            //return View(post);
+            return View();
         }
 
         // GET: Posts/Create
