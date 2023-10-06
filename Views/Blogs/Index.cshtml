@@ -1,4 +1,6 @@
-﻿@model IEnumerable<CoderHive.Models.Blog>
+﻿@using CoderHive.Services
+@inject IImageService imageService
+@model IEnumerable<CoderHive.Models.Blog>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,13 +27,17 @@
 		</div>
 
 		<div class="row">
+			@foreach(var blog in Model) 
+			{
 			<div class="col-lg-4 mb-4">
 				<div class="post-entry-alt">
-					<a asp-controller="Posts" asp-action="Index" class="img-link"><img src="images/img_7_horizontal.jpg" alt="Image" class="img-fluid"></a>
+					@* <a asp-controller="Posts" asp-action="Index" class="img-link"><img src="images/img_7_horizontal.jpg" alt="Image" class="img-fluid"></a> *@
+					<a asp-controller="Posts" asp-action="Index" class="img-link"><img src="@imageService.DecodeImage(blog.ImageData,blog.ImageType)" alt="Image" class="img-fluid"></a>
 					<div class="excerpt">
 
 
-						<h2><a asp-controller="Posts" asp-action="Index">Startup vs corporate: What job suits you best?</a></h2>
+						@* <h2><a asp-controller="Posts" asp-action="Index">Startup vs corporate: What job suits you best?</a></h2> *@
+						<h2><a asp-controller="Posts" asp-action="Index">@blog.Name</a></h2>
 						<div class="post-meta align-items-center text-left clearfix">
 							<figure class="author-figure mb-0 me-3 float-start"><img src="images/person_1.jpg" alt="Image" class="img-fluid"></figure>
 							<span class="d-inline-block mt-1">By <a href="#">David Anderson</a></span>
@@ -43,6 +49,7 @@
 					</div>
 				</div>
 			</div>
+			}
 			<div class="col-lg-4 mb-4">
 				<div class="post-entry-alt">
 					<a asp-controller="Posts" asp-action="Index" class="img-link"><img src="images/img_6_horizontal.jpg" alt="Image" class="img-fluid"></a>

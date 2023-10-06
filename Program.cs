@@ -5,6 +5,7 @@ using CoderHive.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
+using TheBlogProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,12 @@ builder.Services.AddScoped<DataService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddScoped<ICoderHiveEmailSender, EmailService>();
 
+// Register our Image Service
+builder.Services.AddScoped<IImageService, BasicImageService>();
+
+// Register our Slug Service
+builder.Services.AddScoped<ISlugService, BasicSlugService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -62,6 +69,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+// This will create the database and/or Seed the Datbase if Necessary
+// This is another way to get your service activated that is not Constructor Injected
 var dataService = app.Services
     .CreateScope()
     .ServiceProvider

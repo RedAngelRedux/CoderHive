@@ -71,8 +71,8 @@ namespace CoderHive.Services
 
             var modUser = new BlogUser()
             {
-                Email = "redangelredux@gmail.com",
-                UserName = "redangelredux@gmail.com",
+                Email = "redangelredux@hotmail.com",
+                UserName = "redangelredux@hotmail.com",
                 FirstName = "Red",
                 LastName = "Angel",
                 PhoneNumber = "(951) 482-5330",

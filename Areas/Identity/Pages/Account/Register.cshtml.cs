@@ -30,7 +30,6 @@ namespace CoderHive.Areas.Identity.Pages.Account
         private readonly IUserStore<BlogUser> _userStore;
         private readonly IUserEmailStore<BlogUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        //private readonly IEmailSender _emailSender;
         private readonly ICoderHiveEmailSender _emailSender;
 
         public RegisterModel(
@@ -73,6 +72,30 @@ namespace CoderHive.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+
+            /// <summary>
+            /// Custome Addition to the scaffolded Identity
+            /// </summary>
+            [Required]
+			[StringLength(50, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 2)]
+			[Display(Name ="First Name")]
+            public string FirstName { get; set; }
+            /// <summary>
+            /// Custome Addition to the scaffolded Identity
+            /// </summary>
+			[Required]
+			[StringLength(50, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 2)]
+			[Display(Name = "Last Name")]
+			public string LastName { get; set; }
+
+            /// <summary>
+            /// Custome Addition to the scaffolded Identity
+            /// </summary>
+			[Required]
+			[StringLength(50, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 2)]
+			[Display(Name = "Display Name")]
+			public string DisplayName { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -116,6 +139,10 @@ namespace CoderHive.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.DisplayName = Input.DisplayName;
+                user.Email = Input.Email;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
