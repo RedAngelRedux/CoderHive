@@ -78,6 +78,8 @@ namespace CoderHive.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // This code only runs if something has gone wrong
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", blog.AuthorId);
             return View(blog);
         }
@@ -103,7 +105,8 @@ namespace CoderHive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Image")] Blog blog)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Image")] Blog blog)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Blog blog, IFormFile newImage)
         {
             if (id != blog.Id)
             {
@@ -114,7 +117,18 @@ namespace CoderHive.Controllers
             {
                 try
                 {
-                    _context.Update(blog);
+                    var newBlog = await _context.Blogs.FindAsync(blog.Id);
+                    if(newBlog != null)
+                    {
+                        newBlog.Updated = DateTime.Now;
+                        if (newBlog.Name != blog.Name) newBlog.Name = blog.Name;
+                        if (newBlog.Description != blog.Description) newBlog.Description = blog.Description;
+                        if (newImage != null) newBlog.ImageData = await _imageService.EncodeImageAsync(newImage);
+
+                    }
+
+                    //_context.Update(blog);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -130,6 +144,7 @@ namespace CoderHive.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", blog.AuthorId);
             return View(blog);
         }

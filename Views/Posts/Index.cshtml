@@ -1,4 +1,7 @@
-﻿@model IEnumerable<CoderHive.Models.Post>
+﻿@using CoderHive.Services
+@using CoderHive.Models
+@inject IImageService imageService
+@model IEnumerable<Post>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,17 +22,21 @@
 
         <div class="row posts-entry">
             <div class="col-lg-8">
+
+                @foreach( var post in Model ) {
                 <div class="blog-entry d-flex blog-entry-search-item">
                     <a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="img-link me-4">
-                        <img src="/images/img_1_sq.jpg" alt="Image" class="img-fluid">
+                        @* <img src="/images/img_1_sq.jpg" alt="Image" class="img-fluid"> *@
+                        <img src="@imageService.DecodeImage(post.ImageData,post.ImageType)" alt="Image" class="img-fluid">
                     </a>
                     <div>
-                        <span class="date">Apr. 14th, 2022 &bullet; <a href="#">Business</a></span>
-                        <h2><a asp-controller="Posts" asp-action="Details" asp-route-id="1">Thought you loved Python? Wait until you meet Rust</a></h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde, nobis ea quis inventore vel voluptas.</p>
+                        <span class="date">@post.Updated &bullet; <a href="#">Business</a></span>
+                        <h2><a asp-controller="Posts" asp-action="Details" asp-route-id="1">@post.PostTitle</a></h2>
+                        <p>@post.Abstract</p>
                         <p><a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-primary">Read More</a></p>
                     </div>
                 </div>
+                }
 
                 <div class="blog-entry d-flex blog-entry-search-item">
                     <a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="img-link me-4">

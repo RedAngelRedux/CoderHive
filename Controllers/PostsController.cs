@@ -12,17 +12,21 @@ namespace CoderHive.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ISlugService _slugService;
+        private readonly IImageService _imageService;
 
-		public PostsController(ApplicationDbContext context, ISlugService slugService)
-		{
-			_context = context;
-			_slugService = slugService;
-		}
-
-		// GET: Posts
-		public async Task<IActionResult> Index()
+        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService)
         {
-            var applicationDbContext = _context.Posts.Include(p => p.Author).Include(p => p.Blog);
+            _context = context;
+            _slugService = slugService;
+            _imageService = imageService;
+        }
+
+
+        // GET: Posts/Index/1
+        public async Task<IActionResult> Index()
+        {
+            //var applicationDbContext = _context.Posts.Include(p => p.Author).Include(p => p.Blog); 
+            var applicationDbContext = _context.Posts.Where(p => p.BlogId == 1);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -66,6 +70,9 @@ namespace CoderHive.Controllers
             {
                 // Supply additional necessary information
                 post.Created = DateTime.Now;
+
+                post.ImageData = await _imageService.EncodeImageAsync(post.Image);
+                post.ImageType = _imageService.ContentType(post.Image);
 
                 // Create the slug and determine if it is unique
                 var slug = _slugService.UrlFriendly(post.PostTitle);
@@ -116,20 +123,30 @@ namespace CoderHive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Status,Image")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Status")] Post post,IFormFile newImage)
         {
-            if (id != post.Id)
-            {
-                return NotFound();
-            }
+            if (id != post.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    post.Updated = DateTime.Now;
+                    var newPost = await _context.Posts.FindAsync(post.Id);
 
-                    _context.Update(post);
+                    newPost.Updated = DateTime.Now;
+                    newPost.PostTitle = post.PostTitle;
+                    newPost.Abstract = post.Abstract;
+                    newPost.Content = post.Content;
+                    newPost.Status = post.Status;
+
+                    if (newImage is not null)
+                    {
+                        newPost.ImageData =  await _imageService.EncodeImageAsync(newImage);
+                        newPost.ImageType = _imageService.ContentType(newImage);
+                    }
+
+                    //_context.Update(post);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

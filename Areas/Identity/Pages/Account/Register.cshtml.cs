@@ -31,13 +31,17 @@ namespace CoderHive.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<BlogUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly ICoderHiveEmailSender _emailSender;
+        private readonly IImageService _imageService;
+        private readonly IConfiguration _configuration;
 
         public RegisterModel(
             UserManager<BlogUser> userManager,
             IUserStore<BlogUser> userStore,
             SignInManager<BlogUser> signInManager,
             ILogger<RegisterModel> logger,
-            ICoderHiveEmailSender emailSender)
+            ICoderHiveEmailSender emailSender,
+            IImageService imageService,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +49,8 @@ namespace CoderHive.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _imageService = imageService;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -72,7 +78,10 @@ namespace CoderHive.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-
+            // Added manually by Sammy Nava
+            [Display(Name ="Profile Image")]
+            public IFormFile ImageFile { get; set; }
+            
             /// <summary>
             /// Custome Addition to the scaffolded Identity
             /// </summary>
@@ -142,7 +151,13 @@ namespace CoderHive.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.DisplayName = Input.DisplayName;
+                user.UserName = Input.Email;
                 user.Email = Input.Email;
+                user.ImageData =    await _imageService.EncodeImageAsync(Input.ImageFile) ??
+                                    await _imageService.EncodeImageAsync(_configuration["DefaultUserImage"]);
+                user.ImageType = Input.ImageFile is null ? 
+                                    Path.GetExtension(_configuration["DefaultUserImage"]) : 
+                                    _imageService.ContentType(Input.ImageFile); 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
