@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using CoderHive.Data;
 using CoderHive.Models;
 using CoderHive.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace CoderHive.Controllers
 {
@@ -13,12 +14,14 @@ namespace CoderHive.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ISlugService _slugService;
         private readonly IImageService _imageService;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService)
+        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService, UserManager<BlogUser> userManager)
         {
             _context = context;
             _slugService = slugService;
             _imageService = imageService;
+            _userManager = userManager;
         }
 
 
@@ -71,6 +74,9 @@ namespace CoderHive.Controllers
                 // Supply additional necessary information
                 post.Created = DateTime.Now;
 
+                var authorId = _userManager.GetUserId(User);
+                post.AuthorId = authorId;
+
                 post.ImageData = await _imageService.EncodeImageAsync(post.Image);
                 post.ImageType = _imageService.ContentType(post.Image);
 
@@ -85,8 +91,21 @@ namespace CoderHive.Controllers
                 }
                 post.Slug = slug;
 
-				// Save to the database
-				_context.Add(post);
+                _context.Add(post);
+                //// Save to the Post table in the DB
+                //await _context.SaveChangesAsync();
+
+                // Loop over tags
+                foreach (var tag in tagValues)
+                {
+                    _context.Add(new Tag()
+                    {
+                        PostId = post.Id,
+                        AuthorId = post.AuthorId,
+                        Text = tag
+                    });
+                }                
+                // Save to the Tags table in the DB
                 await _context.SaveChangesAsync();
 
                 // Forward to Successful Save Page

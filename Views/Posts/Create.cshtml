@@ -5,70 +5,105 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Create</h1>
-
-<h4>Post</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="BlogId" class="control-label"></label>
-                <select asp-for="BlogId" class="form-control" asp-items="ViewBag.BlogId"></select>
+<div class="hero overlay inner-page bg-primary py-3">
+    <div class="container">
+        <div class="row align-items-center justify-content-center text-center pt-3">
+            <div class="col-lg-6">
+                <h1 class="heading text-white mb-1" data-aos="fade-up">Creating a New Post</h1>
             </div>
-
-            <div class="form-group">
-                <label asp-for="PostTitle" class="control-label"></label>
-                <input asp-for="PostTitle" class="form-control" />
-                <span asp-validation-for="PostTitle" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Abstract" class="control-label"></label>
-                <textarea asp-for="Abstract" class="form-control" ></textarea>
-                <span asp-validation-for="Abstract" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <textarea asp-for="Content" class="form-control" ></textarea>
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" asp-items="@Html.GetEnumSelectList<PostStatus>()" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input type="file" asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<section class="section bg-light">
+    <div class="container">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row align-items-stretch retro-layout">
+                <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="form-group">
+                        <label asp-for="BlogId" class="control-label"></label>
+                        <select asp-for="BlogId" class="form-control" asp-items="ViewBag.BlogId"></select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PostTitle" class="control-label"></label>
+                        <input asp-for="PostTitle" class="form-control" />
+                        <span asp-validation-for="PostTitle" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label"></label>
+                        <select asp-for="Status" asp-items="@Html.GetEnumSelectList<PostStatus>()" class="form-control"></select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Abstract" class="control-label"></label>
+                        <textarea asp-for="Abstract" class="form-control"></textarea>
+                        <span asp-validation-for="Abstract" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Image" class="control-label"></label>
+                        <input type="file" asp-for="Image" class="form-control" />
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <label class="control-label">Manage Tags</label>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="text" class="form-control" id="TagEntry" />
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <button onclick="AddTag" id="TagEntry" name="TagEntry" type="button" class="btn btn-dark btn-sm">Add</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button onclick="RemoveTag" id="TagEntry" name="TagRemove" type="button" class="btn btn-dark btn-sm">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <select class="w-100" name="TagValues" id="TagList" multiple size="5"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-8" data-aos="fade-up" data-aos-delay="200">
+                    <div class="form-group">
+                        <label asp-for="Content" class="control-label"></label>
+                        <textarea asp-for="Content" class="form-control"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+                <row>
+
+                </row>
+            </div>
+            <div class="row align-items-stretch retro-layout">
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</section>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    <script src="/js/posts.js"></script>
+
     <script>
         //Default font size but not for placeholder...
         $('#Content').summernote({
-            placeholder: "Content"
+            //placeholder: "Content",
+            height: "50vh"
         });
     </script>
 }
