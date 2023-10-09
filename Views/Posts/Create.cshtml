@@ -109,13 +109,17 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    <script src="/js/posts.js"></script>
-
     <script>
+
+        let tagValues = '@ViewData["TagValues"]';
+
         //Default font size but not for placeholder...
         $('#Content').summernote({
             //placeholder: "Content",
             height: "50vh"
         });
     </script>
+
+    <script src="/js/posts.js"></script>
+
 }
