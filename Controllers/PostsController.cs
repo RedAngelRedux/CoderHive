@@ -6,6 +6,7 @@ using CoderHive.Data;
 using CoderHive.Models;
 using CoderHive.Services;
 using Microsoft.AspNetCore.Identity;
+using SQLitePCL;
 
 namespace CoderHive.Controllers
 {
@@ -134,12 +135,14 @@ namespace CoderHive.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.FindAsync(id);
+            //var post = await _context.Posts.FindAsync(id);
+            var post = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == id);
             if (post == null)
             {
                 return NotFound();
             }
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
+            ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
             return View(post);
         }
 
@@ -148,7 +151,7 @@ namespace CoderHive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,Status")] Post post,IFormFile newImage)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,PostTitle,Abstract,Content,Status")] Post post,IFormFile image, List<string> tagValues)
         {
             if (id != post.Id) return NotFound();
 
@@ -156,7 +159,8 @@ namespace CoderHive.Controllers
             {
                 try
                 {
-                    var newPost = await _context.Posts.FindAsync(post.Id);
+                    //var newPost = await _context.Posts.FindAsync(post.Id);
+                    var newPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == post.Id);
 
                     newPost.Updated = DateTime.Now;
                     newPost.PostTitle = post.PostTitle;
@@ -164,13 +168,25 @@ namespace CoderHive.Controllers
                     newPost.Content = post.Content;
                     newPost.Status = post.Status;
 
-                    if (newImage is not null)
+                    if (image is not null)
                     {
-                        newPost.ImageData =  await _imageService.EncodeImageAsync(newImage);
-                        newPost.ImageType = _imageService.ContentType(newImage);
+                        newPost.ImageData =  await _imageService.EncodeImageAsync(image);
+                        newPost.ImageType = _imageService.ContentType(image);
                     }
 
-                    //_context.Update(post);
+                    // Remove all Tags previously assiciated with this Post
+                    _context.Tags.RemoveRange(newPost.Tags);
+
+                    // Add in the new Tags from the Edit form
+                    foreach(var tagText in tagValues)
+                    {
+                        _context.Add(new Tag()
+                        {
+                            PostId = post.Id,
+                            AuthorId = newPost.AuthorId,
+                            Text = tagText
+                        });
+                    }
 
                     await _context.SaveChangesAsync();
                 }
@@ -188,7 +204,7 @@ namespace CoderHive.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", post.AuthorId);
-            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Description", post.BlogId);
+            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
             return View(post);
         }
 
