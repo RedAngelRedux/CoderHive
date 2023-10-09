@@ -29,7 +29,11 @@ namespace CoderHive.Controllers
         public async Task<IActionResult> Index()
         {
             //var applicationDbContext = _context.Posts.Include(p => p.Author).Include(p => p.Blog); 
-            var applicationDbContext = _context.Posts.Where(p => p.BlogId == 1);
+            var applicationDbContext = 
+                _context.Posts.Where(p => p.BlogId == 1)
+                .Include(p => p.Author)
+                .Include(p => p.Blog)
+                .Include(p => p.Tags);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -44,6 +48,7 @@ namespace CoderHive.Controllers
             var post = await _context.Posts
                 .Include(p => p.Author)
                 .Include(p => p.Blog)
+                .Include(p => p.Tags)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (post == null)
             {
@@ -93,7 +98,7 @@ namespace CoderHive.Controllers
 
                 _context.Add(post);
                 //// Save to the Post table in the DB
-                //await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 // Loop over tags
                 foreach (var tag in tagValues)
@@ -101,10 +106,11 @@ namespace CoderHive.Controllers
                     _context.Add(new Tag()
                     {
                         PostId = post.Id,
-                        AuthorId = post.AuthorId,
+                        AuthorId = authorId,
                         Text = tag
                     });
-                }                
+                }  
+                
                 // Save to the Tags table in the DB
                 await _context.SaveChangesAsync();
 

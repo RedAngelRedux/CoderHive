@@ -33,6 +33,12 @@
                         <span class="date">@post.Updated &bullet; <a href="#">Business</a></span>
                         <h2><a asp-controller="Posts" asp-action="Details" asp-route-id="1">@post.PostTitle</a></h2>
                         <p>@post.Abstract</p>
+                        <p>Tags: @foreach(var tag in post.Tags)
+                        {
+                            var tagText = (tag.Text ?? "").ToLower();
+                            <a class="btn btn-warning btn-sm btn-outline-dark" asp-action="TagIndex" asp-route-tag="@tagText">#@tagText</a>                      
+                        }
+                        </p>
                         <p><a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-primary">Read More</a></p>
                     </div>
                 </div>
