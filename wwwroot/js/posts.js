@@ -74,6 +74,7 @@ function Search(str) {
 // This will select all of the entries in the TagList upon submit, to ensure they get passed to the Post Create
 $("form").on("submit", function () {
     $("#TagList option").prop("selected", "selected");
+
 })
 
 // Look for the tagValues variable to see if it has data

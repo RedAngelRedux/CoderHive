@@ -7,6 +7,8 @@ using CoderHive.Models;
 using CoderHive.Services;
 using Microsoft.AspNetCore.Identity;
 using SQLitePCL;
+using System.Drawing;
+using System.Reflection.Metadata;
 
 namespace CoderHive.Controllers
 {
@@ -88,16 +90,34 @@ namespace CoderHive.Controllers
 
                 // Create the slug and determine if it is unique
                 var slug = _slugService.UrlFriendly(post.PostTitle);
-                if(!_slugService.IsUnique(slug))
+                var validationError = false;
+                // Detect Empty Title
+                if(string.IsNullOrEmpty(slug))
                 {
-                    // Add a Model state error and return the user back to the Create view
-                    ModelState.AddModelError("Title", "The title you provided cannot be used as it results in a duplicate slug.");
+                    validationError = true;
+                    // Add a Model State error, and return the user back to the Create view
+                    ModelState.AddModelError("", "The title cannot be empty.");
+                }
+                // Detect incoming duplicate Slugs
+                if (!_slugService.IsUnique(slug)) 
+                {
+                    validationError = true;
+                    // Add a Model State error, and return the user back to the Create view
+                    ModelState.AddModelError("", "The title you provided cannot be used as it results in a duplicate URL.");
+
+                }
+                if(validationError)
+                {
+                    // This is not part of the post, since the state of tagValues is handled totally by JavaScript on the client
+                    // Therefore, we need to specifically "send it back" to them as they sent it to us
                     ViewData["TagValues"] = string.Join(",", tagValues);
+
                     return View(post);
                 }
                 post.Slug = slug;
 
                 _context.Add(post);
+
                 //// Save to the Post table in the DB
                 await _context.SaveChangesAsync();
 
@@ -141,8 +161,10 @@ namespace CoderHive.Controllers
             {
                 return NotFound();
             }
+
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
             ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
+
             return View(post);
         }
 
@@ -203,8 +225,10 @@ namespace CoderHive.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", post.AuthorId);
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
+            
             return View(post);
         }
 
