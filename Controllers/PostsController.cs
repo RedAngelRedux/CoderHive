@@ -173,7 +173,8 @@ namespace CoderHive.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,PostTitle,Abstract,Content,Status")] Post post,IFormFile image, List<string> tagValues)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,PostTitle,Abstract,Content,Status")] Post post, IFormFile newImage, List<string> tagValues)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,PostTitle,Abstract,Content,Status,Image")] Post post, List<string> tagValues)
         {
             if (id != post.Id) return NotFound();
 
@@ -182,22 +183,27 @@ namespace CoderHive.Controllers
                 try
                 {
                     //var newPost = await _context.Posts.FindAsync(post.Id);
-                    var newPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == post.Id);
 
-                    newPost.Updated = DateTime.Now;
-                    newPost.PostTitle = post.PostTitle;
-                    newPost.Abstract = post.Abstract;
-                    newPost.Content = post.Content;
-                    newPost.Status = post.Status;
+                    // Set the post object that you are ultimately going to save back to the dabase equal to the original data from the database
+                    // This is so you can keep track of what data was actually changed by the user during the Edit process and act accordingly
+                    var pendingPost = await _context.Posts.Include(p => p.Tags).FirstOrDefaultAsync(p => p.Id == post.Id);
 
-                    if (image is not null)
+                    pendingPost.Updated = DateTime.Now;
+                    pendingPost.PostTitle = post.PostTitle;
+                    pendingPost.Abstract = post.Abstract;
+                    pendingPost.Content = post.Content;
+                    pendingPost.Status = post.Status;
+
+                    if (post.Image is not null)
                     {
-                        newPost.ImageData =  await _imageService.EncodeImageAsync(image);
-                        newPost.ImageType = _imageService.ContentType(image);
+                        //pendingPost.ImageData =  await _imageService.EncodeImageAsync(newImage);
+                        //pendingPost.ImageType = _imageService.ContentType(newImage);
+                        pendingPost.ImageData = await _imageService.EncodeImageAsync(post.Image);
+                        pendingPost.ImageType = _imageService.ContentType(post.Image);
                     }
 
                     // Remove all Tags previously assiciated with this Post
-                    _context.Tags.RemoveRange(newPost.Tags);
+                    _context.Tags.RemoveRange(pendingPost.Tags);
 
                     // Add in the new Tags from the Edit form
                     foreach(var tagText in tagValues)
@@ -205,9 +211,27 @@ namespace CoderHive.Controllers
                         _context.Add(new Tag()
                         {
                             PostId = post.Id,
-                            AuthorId = newPost.AuthorId,
+                            AuthorId = pendingPost.AuthorId,
                             Text = tagText
                         });
+                    }
+
+                    var newSlug = _slugService.UrlFriendly(post.PostTitle);
+                    if (newSlug != pendingPost.Slug)
+                    {
+                        if (_slugService.IsUnique(newSlug))
+                        {
+                            pendingPost.PostTitle = post.PostTitle;
+                            pendingPost.Slug = newSlug;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Title", "This Title cannot be used because it results in duplicate URL");
+
+                            ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
+                            ViewData["TagValues"] = string.Join(",", post.Tags.Select(t => t.Text));
+                            return View(post);
+                        }
                     }
 
                     await _context.SaveChangesAsync();
@@ -226,6 +250,7 @@ namespace CoderHive.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", post.AuthorId);
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
             

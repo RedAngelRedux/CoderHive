@@ -3,6 +3,7 @@ using System;
 using CoderHive.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CoderHive.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231010045956_allow_null_images_for_Post")]
+    partial class allow_null_images_for_Post
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,9 +45,11 @@ namespace CoderHive.Data.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<byte[]>("ImageData")
+                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("ImageType")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -100,9 +105,11 @@ namespace CoderHive.Data.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<byte[]>("ImageData")
+                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("ImageType")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")

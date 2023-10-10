@@ -25,10 +25,10 @@ namespace CoderHive.Models
         public string DisplayName { get; set; } = "";
 
         [Display(Name = "User Image")]
-        public byte[] ImageData { get; set; } = Array.Empty<byte>();
+        public byte[]? ImageData { get; set; } = Array.Empty<byte>();
 
         [Display(Name = "Image Type")]
-        public string ImageType { get; set; } = string.Empty;
+        public string? ImageType { get; set; } = string.Empty;
 
         [NotMapped]
         public IFormFile? Image { get; set; }
