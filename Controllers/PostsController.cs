@@ -40,10 +40,11 @@ namespace CoderHive.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Posts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // //GET: Posts/Details?slug=slug-goes-here
+        // GET: BlogPosts/UrlFriendly/slug
+        public async Task<IActionResult> Details(string slug)
         {
-            if (id == null || _context.Posts == null)
+            if (string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
@@ -52,7 +53,8 @@ namespace CoderHive.Controllers
                 .Include(p => p.Author)
                 .Include(p => p.Blog)
                 .Include(p => p.Tags)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(r => r.Slug == slug);
+
             if (post == null)
             {
                 return NotFound();
@@ -61,6 +63,28 @@ namespace CoderHive.Controllers
             return View(post);
             //return View();
         }
+
+        //// GET: Posts/Details/1
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null || _context.Posts == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var post = await _context.Posts
+        //        .Include(p => p.Author)
+        //        .Include(p => p.Blog)
+        //        .Include(p => p.Tags)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (post == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(post);
+        //    //return View();
+        //}
 
         // GET: Posts/Create
         public IActionResult Create()
