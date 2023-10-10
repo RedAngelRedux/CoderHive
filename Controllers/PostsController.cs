@@ -96,20 +96,30 @@ namespace CoderHive.Controllers
                 {
                     validationError = true;
                     // Add a Model State error, and return the user back to the Create view
-                    ModelState.AddModelError("", "The title cannot be empty.");
+                    ModelState.AddModelError("PostTitle", "The title cannot be empty.");
                 }
                 // Detect incoming duplicate Slugs
-                if (!_slugService.IsUnique(slug)) 
+                else if (!_slugService.IsUnique(slug)) 
                 {
                     validationError = true;
                     // Add a Model State error, and return the user back to the Create view
-                    ModelState.AddModelError("", "The title you provided cannot be used as it results in a duplicate URL.");
+                    ModelState.AddModelError("PostTitle", "The title you provided cannot be used as it results in a duplicate URL.");
 
                 }
+#if DEBUG
+                // Custom ModelState Validation Example
+                else if(slug.Contains("test"))
+                {
+                    validationError = true;
+                    ModelState.AddModelError("", "Oh Oh, are you testing again");
+                    ModelState.AddModelError("PostTitle", "The title cannot contain the word 'test'");
+                }
+#endif
                 if(validationError)
                 {
                     // This is not part of the post, since the state of tagValues is handled totally by JavaScript on the client
                     // Therefore, we need to specifically "send it back" to them as they sent it to us
+                    ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);
                     ViewData["TagValues"] = string.Join(",", tagValues);
 
                     return View(post);
