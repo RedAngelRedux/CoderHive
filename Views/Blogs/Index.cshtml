@@ -1,6 +1,7 @@
 ﻿@using CoderHive.Services
+@using CoderHive.Models
 @inject IImageService imageService
-@model IEnumerable<CoderHive.Models.Blog>
+@model IEnumerable<Blog>
 
 @{
     ViewData["Title"] = "Index";
@@ -32,20 +33,18 @@
 			<div class="col-lg-4 mb-4">
 				<div class="post-entry-alt">
 					@* <a asp-controller="Posts" asp-action="Index" class="img-link"><img src="images/img_7_horizontal.jpg" alt="Image" class="img-fluid"></a> *@
-					<a asp-controller="Posts" asp-action="Index" class="img-link"><img src="@imageService.DecodeImage(blog.ImageData,blog.ImageType)" alt="Image" class="img-fluid"></a>
+					<a asp-controller="Posts" asp-action="Index" asp-route-id="@blog.Id" class="img-link"><img src="@imageService.DecodeImage(blog.ImageData,blog.ImageType)" alt="Image" class="img-fluid"></a>
 					<div class="excerpt">
-
-
 						@* <h2><a asp-controller="Posts" asp-action="Index">Startup vs corporate: What job suits you best?</a></h2> *@
-						<h2><a asp-controller="Posts" asp-action="Index">@blog.Name</a></h2>
+						<h2><a asp-controller="Posts" asp-action="Index" asp-route-id="@blog.Id">@blog.Name</a></h2>
 						<div class="post-meta align-items-center text-left clearfix">
 							<figure class="author-figure mb-0 me-3 float-start"><img src="images/person_1.jpg" alt="Image" class="img-fluid"></figure>
-							<span class="d-inline-block mt-1">By <a href="#">David Anderson</a></span>
-							<span>&nbsp;-&nbsp; July 19, 2019</span>
+							<span class="d-inline-block mt-1">By <a href="#">@blog.Author.FullName</a></span>
+							<span>&nbsp;-&nbsp; @blog.Created</span>
 						</div>
 
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo sunt tempora dolor laudantium sed optio, explicabo ad deleniti impedit facilis fugit recusandae! Illo, aliquid, dicta beatae quia porro id est.</p>
-						<p><a href="#" class="read-more">Continue Reading</a></p>
+						<p>@blog.Description</p>
+						<p><a asp-controller="Posts" asp-action="Index" asp-route-id="@blog.Id" class="read-more">Go To Blog</a></p>
 					</div>
 				</div>
 			</div>
@@ -86,8 +85,6 @@
 					</div>
 				</div>
 			</div>
-
-
 			<div class="col-lg-4 mb-4">
 				<div class="post-entry-alt">
 					<a asp-controller="Posts" asp-action="Index" class="img-link"><img src="images/img_4_horizontal.jpg" alt="Image" class="img-fluid"></a>
@@ -142,8 +139,6 @@
 					</div>
 				</div>
 			</div>
-
-
 			<div class="col-lg-4 mb-4">
 				<div class="post-entry-alt">
 					<a asp-controller="Posts" asp-action="Index" class="img-link"><img src="images/img_1_horizontal.jpg" alt="Image" class="img-fluid"></a>
@@ -200,6 +195,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="row text-start pt-5 border-top">
 			<div class="col-md-12">
 				<div class="custom-pagination">

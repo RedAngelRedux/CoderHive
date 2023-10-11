@@ -29,8 +29,8 @@ namespace CoderHive.Controllers
         // GET: Blogs
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Blogs.Include(b => b.Author);
-            return View(await applicationDbContext.ToListAsync());
+            var blogs = await _context.Blogs.Include(b => b.Author).ToListAsync() ;
+            return View(blogs);
         }
 
         // GET: Blogs/Details/5

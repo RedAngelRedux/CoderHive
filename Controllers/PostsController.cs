@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using SQLitePCL;
 using System.Drawing;
 using System.Reflection.Metadata;
+using CoderHive.ViewModels;
+using NuGet.Versioning;
 
 namespace CoderHive.Controllers
 {
@@ -29,15 +31,22 @@ namespace CoderHive.Controllers
 
 
         // GET: Posts/Index/1
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id)
         {
-            //var applicationDbContext = _context.Posts.Include(p => p.Author).Include(p => p.Blog); 
-            var applicationDbContext = 
-                _context.Posts.Where(p => p.BlogId == 1)
+            var postsByBlog = new PostsByBlog();
+
+            var blog = await _context.Blogs.FindAsync(id);
+
+            var posts = await
+                _context.Posts.Where(p => p.BlogId == id)
                 .Include(p => p.Author)
                 .Include(p => p.Blog)
-                .Include(p => p.Tags);
-            return View(await applicationDbContext.ToListAsync());
+                .Include(p => p.Tags).ToListAsync();
+
+            postsByBlog.BlogTitle = (blog is not null) ? blog.Name : "No Blog Name Specified";
+            postsByBlog.Posts = posts;
+
+            return View(postsByBlog);
         }
 
         // //GET: Posts/Details?slug=slug-goes-here
