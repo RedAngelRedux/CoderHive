@@ -31,8 +31,10 @@ namespace CoderHive.Controllers
 
 
         // GET: Posts/Index/1
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int? id)
         {
+            if(id is null) return NotFound();
+
             var postsByBlog = new PostsByBlog();
 
             var blog = await _context.Blogs.FindAsync(id);

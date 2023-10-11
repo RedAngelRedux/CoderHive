@@ -10,6 +10,7 @@ using CoderHive.Models;
 using CoderHive.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList;
 
 namespace CoderHive.Controllers
 {
@@ -27,10 +28,30 @@ namespace CoderHive.Controllers
         }
 
         // GET: Blogs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            var blogs = await _context.Blogs.Include(b => b.Author).ToListAsync() ;
-            return View(blogs);
+            var pageNumber = page ?? 1;
+            var pageSize = 6;  // To-do:  Move this to configuration file
+
+            // // Original Index Listing
+            //var blogs = await _context.Blogs.Include(b => b.Author).ToListAsync() ;
+            //return View(blogs);
+
+            //// Page Index Listing of All Blogs with any posts that are production ready
+            //var blogs = 
+            //    _context.Blogs.Where(b => b.Posts.Any(p => p.Status == Enums.PostStatus.ProductionReady))
+            //    .Include(p => p.Author)
+            //    .OrderByDescending(b => b.Created)
+            //    .ToPagedListAsync(pageNumber,pageSize);
+
+            // Page Index Listing of All Blogs with or without posts
+            var blogs =
+                _context.Blogs
+                .Include(p => p.Author)
+                .OrderByDescending(b => b.Created)
+                .ToPagedListAsync(pageNumber, pageSize);
+
+            return View(await blogs);
         }
 
         // GET: Blogs/Details/5
