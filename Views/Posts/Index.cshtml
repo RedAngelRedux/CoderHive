@@ -1,6 +1,9 @@
 ﻿@using CoderHive.Services
 @using CoderHive.ViewModels
 @using CoderHive.Models
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
 
 @inject IImageService imageService
 
@@ -8,7 +11,6 @@
 
 @{
     ViewData["Title"] = "Index";
-    string blogName = "";
 }
 
 <div class="hero overlay inner-page bg-primary py-3">
@@ -48,7 +50,7 @@
                 </div>
                 }
 
-                <div class="blog-entry d-flex blog-entry-search-item">
+@*                 <div class="blog-entry d-flex blog-entry-search-item">
                     <a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="img-link me-4">
                         <img src="/images/img_2_sq.jpg" alt="Image" class="img-fluid">
                     </a>
@@ -94,17 +96,11 @@
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde, nobis ea quis inventore vel voluptas.</p>
                         <p><a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-primary">Read More</a></p>
                     </div>
-                </div>
-
+                </div>*@ 
                 <div class="row text-start pt-5 border-top">
                     <div class="col-md-12">
                         <div class="custom-pagination">
-                            <span>1</span>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <a href="#">4</a>
-                            <span>...</span>
-                            <a href="#">15</a>
+                            @Html.PagedListPager(Model.Posts, page => Url.Action("Index",new { id = Model.BlogId, page = page}));
                         </div>
                     </div>
                 </div>
@@ -197,6 +193,13 @@
 </div>
 
 
+@* <div class="row text-start pt-5 border-top">
+    <div class="col-md-12">
+        <div class="custom-pagination">
+            @Html.PagedListPager(Model.Posts, page => Url.Action("Index",new { id = Model.BlogId, page = page}));
+        </div>
+    </div>
+</div>*@
 
 
 

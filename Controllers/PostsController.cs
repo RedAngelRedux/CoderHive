@@ -6,11 +6,10 @@ using CoderHive.Data;
 using CoderHive.Models;
 using CoderHive.Services;
 using Microsoft.AspNetCore.Identity;
-using SQLitePCL;
-using System.Drawing;
-using System.Reflection.Metadata;
 using CoderHive.ViewModels;
-using NuGet.Versioning;
+using X.PagedList;
+using X.PagedList.Mvc.Core;
+using X.PagedList.Web.Common;
 
 namespace CoderHive.Controllers
 {
@@ -31,7 +30,7 @@ namespace CoderHive.Controllers
 
 
         // GET: Posts/Index/1
-        public async Task<IActionResult> Index(int? id)
+        public async Task<IActionResult> Index(int? id, int? page)
         {
             if(id is null) return NotFound();
 
@@ -46,7 +45,8 @@ namespace CoderHive.Controllers
                 .Include(p => p.Tags).ToListAsync();
 
             postsByBlog.BlogTitle = (blog is not null) ? blog.Name : "No Blog Name Specified";
-            postsByBlog.Posts = posts;
+            postsByBlog.BlogId = (blog is not null) ? blog.Id : 1;
+            postsByBlog.Posts = posts.ToPagedList(page ?? 1, 2);
 
             return View(postsByBlog);
         }
