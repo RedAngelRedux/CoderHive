@@ -104,8 +104,8 @@
 							<a href="#" class="burger ms-auto float-end site-menu-toggle js-menu-toggle d-inline-block d-lg-none light">
 								<span></span>
 							</a>
-							<form action="#" class="search-form d-none d-lg-inline-block">
-								<input type="text" class="form-control" placeholder="Search...">
+							<form asp-action="SearchAllPostsIndex" asp-controller="Posts" class="search-form d-none d-lg-inline-block">
+								<input type="text" name="SearchTerm" class="form-control" placeholder="Search...">
 								<span class="bi-search"></span>
 							</form>
 						</div>

@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using CoderHive.Data;
 using CoderHive.Models;
 using CoderHive.Services;
+using CoderHive.Enums;
 using Microsoft.AspNetCore.Identity;
 using CoderHive.ViewModels;
 using X.PagedList;
+
 using X.PagedList.Mvc.Core;
 using X.PagedList.Web.Common;
 
@@ -28,6 +30,40 @@ namespace CoderHive.Controllers
             _userManager = userManager;
         }
 
+        public async Task<IActionResult> SearchAllPostsIndex(int? page, string searchTerm)
+        {
+            var postByBlog = new PostsByBlog{SearchTerm = searchTerm};
+
+            var pageNumber = page ?? 1;
+            var pageSize = 2;
+
+            // This gets a list of all Production Ready Posts from the Database
+            var posts = _context.Posts.Where(p => p.Status == PostStatus.ProductionReady).AsQueryable();
+
+            // This narrows it down to the Search Term, if any
+            if(searchTerm is not null)
+            {
+                searchTerm = searchTerm.ToLower();
+
+                posts = posts.Where
+                (
+                    p => p.PostTitle.ToLower().Contains(searchTerm) ||
+                    p.Abstract.ToLower().Contains(searchTerm) ||
+                    p.Content.ToLower().Contains(searchTerm) ||
+                    p.Comments.Any(c => c.Body.ToLower().Contains(searchTerm) ||
+                                        c.ModeratedBody.ToLower().Contains(searchTerm) ||
+                                        c.Author.FirstName.ToLower().Contains(searchTerm) ||
+                                        c.Author.LastName.ToLower().Contains(searchTerm) ||
+                                        c.Author.Email.ToLower().Contains(searchTerm)));
+            }
+            
+            // This orders the remaining records (either all or searchTerm filtered)
+            posts = posts.OrderByDescending(p => p.Created);
+            postByBlog.Posts = await posts.ToPagedListAsync(pageNumber, pageSize);
+
+            //return View(postByBlog);
+            return View("Index",postByBlog);
+        }
 
         // GET: Posts/Index/1
         public async Task<IActionResult> Index(int? id, int? page)
@@ -39,14 +75,14 @@ namespace CoderHive.Controllers
             var blog = await _context.Blogs.FindAsync(id);
 
             var posts = await
-                _context.Posts.Where(p => p.BlogId == id)
+                _context.Posts.Where(p => p.BlogId == id && p.Status == PostStatus.ProductionReady)
                 .Include(p => p.Author)
                 .Include(p => p.Blog)
-                .Include(p => p.Tags).ToListAsync();
+                .Include(p => p.Tags).ToPagedListAsync(page ?? 1, 2);
 
             postsByBlog.BlogTitle = (blog is not null) ? blog.Name : "No Blog Name Specified";
             postsByBlog.BlogId = (blog is not null) ? blog.Id : 1;
-            postsByBlog.Posts = posts.ToPagedList(page ?? 1, 2);
+            postsByBlog.Posts = posts;
 
             return View(postsByBlog);
         }
