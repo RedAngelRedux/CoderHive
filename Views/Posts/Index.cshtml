@@ -44,7 +44,7 @@
                             <a class="btn btn-warning btn-sm btn-outline-dark" asp-action="TagIndex" asp-route-tag="@tagText">#@tagText</a>                      
                         }
                         </p>
-                        <p><a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="btn btn-sm btn-outline-primary">Read More</a></p>
+                        <p><a asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug" class="btn btn-sm btn-outline-primary">Read More</a></p>
                     </div>
                 </div>
                 }

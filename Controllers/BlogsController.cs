@@ -46,12 +46,12 @@ namespace CoderHive.Controllers
 
             // Page Index Listing of All Blogs with or without posts
             var blogs =
-                _context.Blogs
-                .Include(p => p.Author)
+                await _context.Blogs
+                .Include(b => b.Author)
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
-            return View(await blogs);
+            return View(blogs);
         }
 
         // GET: Blogs/Details/5
