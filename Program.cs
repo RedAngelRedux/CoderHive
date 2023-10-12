@@ -31,6 +31,7 @@ builder.Services.AddRazorPages();
 
 // Register my custom Services
 builder.Services.AddScoped<DataService>();
+builder.Services.AddScoped<BlogSearchService>();
 
 // Register a pre-configured instance of the MailSettings class
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));

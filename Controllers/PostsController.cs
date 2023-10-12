@@ -21,13 +21,15 @@ namespace CoderHive.Controllers
         private readonly ISlugService _slugService;
         private readonly IImageService _imageService;
         private readonly UserManager<BlogUser> _userManager;
+        private readonly BlogSearchService _blogSearchService;
 
-        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService, UserManager<BlogUser> userManager)
+        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService, UserManager<BlogUser> userManager, BlogSearchService blogSearchService)
         {
             _context = context;
             _slugService = slugService;
             _imageService = imageService;
             _userManager = userManager;
+            _blogSearchService = blogSearchService;
         }
 
         public async Task<IActionResult> SearchAllPostsIndex(int? page, string searchTerm)
@@ -37,28 +39,8 @@ namespace CoderHive.Controllers
             var pageNumber = page ?? 1;
             var pageSize = 2;
 
-            // This gets a list of all Production Ready Posts from the Database
-            var posts = _context.Posts.Where(p => p.Status == PostStatus.ProductionReady).AsQueryable();
+            var posts = _blogSearchService.Search(searchTerm);
 
-            // This narrows it down to the Search Term, if any
-            if(searchTerm is not null)
-            {
-                searchTerm = searchTerm.ToLower();
-
-                posts = posts.Where
-                (
-                    p => p.PostTitle.ToLower().Contains(searchTerm) ||
-                    p.Abstract.ToLower().Contains(searchTerm) ||
-                    p.Content.ToLower().Contains(searchTerm) ||
-                    p.Comments.Any(c => c.Body.ToLower().Contains(searchTerm) ||
-                                        c.ModeratedBody.ToLower().Contains(searchTerm) ||
-                                        c.Author.FirstName.ToLower().Contains(searchTerm) ||
-                                        c.Author.LastName.ToLower().Contains(searchTerm) ||
-                                        c.Author.Email.ToLower().Contains(searchTerm)));
-            }
-            
-            // This orders the remaining records (either all or searchTerm filtered)
-            posts = posts.OrderByDescending(p => p.Created);
             postByBlog.Posts = await posts.ToPagedListAsync(pageNumber, pageSize);
 
             //return View(postByBlog);
