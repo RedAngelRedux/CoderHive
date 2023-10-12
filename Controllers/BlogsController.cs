@@ -74,7 +74,7 @@ namespace CoderHive.Controllers
         }
 
         // GET: Blogs/Create
-        [Authorize]
+        [Authorize(Roles ="Administrator")]
         public IActionResult Create()
         {
             return View();

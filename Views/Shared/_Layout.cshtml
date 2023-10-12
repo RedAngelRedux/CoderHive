@@ -97,6 +97,10 @@
  *@								<li><a asp-controller="Blogs" asp-action="Index">Blogs</a></li>
 								<li><a asp-controller="Home" asp-action="About">About Us</a></li>
 								<li><a asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+								@if (User.IsInRole("Administrator"))
+								{
+								<li><a asp-controller="Blogs" asp-action="Create">Create Blog</a></li>
+								}
 							</ul>
 						</div>
 						<div class="col-4 text-end">
