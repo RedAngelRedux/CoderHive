@@ -8,6 +8,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    var counter = 0;
 }
 
 <div class="site-cover site-cover-sm same-height overlay single-page" style="background-image: url('@imageService.DecodeImage(Model.ImageData,Model.ImageType)'); background-position: center;">
@@ -86,14 +87,14 @@
                                         <p>@comment.Body</p>
                                         @if(comment.Moderated is null && comment.Deleted is null && comment.AuthorId == userManager.GetUserId(User))
                                         {
-                                            <p><button data-bs-toggle="modal" data-bs-target="#editModal" class="reply rounded">Edit</button></p>
+                                            <p><button data-bs-toggle="modal" data-bs-target="@($"#editModal{counter}")" class="reply rounded">Edit</button></p>
                                         }
                                         else
                                         {
                                             <p><a href="#" class="reply rounded">Reply</a></p>
                                         }
                                         @*Modals*@
-                                        <div class="modal" id="editModal">
+                                        <div class="modal" id="@($"editModal{counter}")">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -118,6 +119,7 @@
                                         </div>
                                     </div>
                                 </li>
+                                counter++;
                             }
                         </ul>
                     </div>
