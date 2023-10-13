@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using CoderHive.ViewModels;
 using X.PagedList;
 
-using X.PagedList.Mvc.Core;
-using X.PagedList.Web.Common;
 
 namespace CoderHive.Controllers
 {
@@ -64,6 +62,8 @@ namespace CoderHive.Controllers
 
             postsByBlog.BlogTitle = (blog is not null) ? blog.Name : "No Blog Name Specified";
             postsByBlog.BlogId = (blog is not null) ? blog.Id : 1;
+            postsByBlog.BlogImageData = (blog is not null) ? blog.ImageData : null;
+            postsByBlog.BlogImageType = (blog is not null) ? blog.ImageType : "";
             postsByBlog.Posts = posts;
 
             return View(postsByBlog);
@@ -82,6 +82,7 @@ namespace CoderHive.Controllers
                 .Include(p => p.Author)
                 .Include(p => p.Blog)
                 .Include(p => p.Tags)
+                .Include(p => p.Comments).ThenInclude(c => c.Author)
                 .FirstOrDefaultAsync(r => r.Slug == slug);
 
             if (post == null)

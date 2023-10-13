@@ -15,8 +15,9 @@ namespace CoderHive.ViewModels
         public string? BlogTitle { get; set; } = null;
         //public IEnumerable<Post>? Posts { get; set; }
         public int? BlogId { get; set; } = null;
+        public byte[]? BlogImageData { get; set; }
+        public string? BlogImageType {  get; set; }
         public string? SearchTerm { get; set; } = null;
         public IPagedList<Post>? Posts { get; set; }
-
     }
 }
