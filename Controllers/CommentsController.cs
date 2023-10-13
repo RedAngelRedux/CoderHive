@@ -35,6 +35,41 @@ namespace CoderHive.Controllers
             return View("Index", originalComments);
         }
 
+        public async Task<IActionResult>Moderate(int id, [Bind("Id,Body,ModeratedBody,ModerationType")] Comment comment)
+        {
+            if(id != comment.Id)
+            {
+                return NotFound();
+            }
+
+            if(ModelState.IsValid)
+            {
+                var pendingComment = await _context.Comments.Include(c => c.Post).FirstOrDefaultAsync(c => c.Id == comment.Id);
+                try
+                {
+                    //pendingComment.ModeratedBody = comment.ModeratedBody;
+                    pendingComment.ModeratedBody = comment.ModeratedBody;
+                    pendingComment.ModerationType = comment.ModerationType;
+                    pendingComment.Moderated = DateTime.Now;
+                    pendingComment.ModeratorId = _userManager.GetUserId(User);
+
+                    await _context.SaveChangesAsync();
+                }
+                catch(DbUpdateConcurrencyException)
+                {
+                    if(CommentExists(comment.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", "Posts", new { slug = pendingComment.Post.Slug }, "commentSection");
+            }
+            return View(comment);
+        }
         //public async Task<IActionResult> Index()
         //{
         //    var applicationDbContext = _context.Comments.Include(c => c.Author).Include(c => c.Moderator).Include(c => c.Post);
@@ -59,11 +94,13 @@ namespace CoderHive.Controllers
         {
             if (ModelState.IsValid)
             {
+                var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == comment.PostId);
+
                 comment.AuthorId = _userManager.GetUserId(User);
                 comment.Created = DateTime.Now;
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Posts", new { slug = post.Slug }, "commentSection");
             }
 
             return View(comment);
