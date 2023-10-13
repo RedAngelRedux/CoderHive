@@ -105,13 +105,13 @@
                                             @if(comment.Moderated is null && comment.Deleted is null && comment.AuthorId == userManager.GetUserId(User))
                                             {
                                                 <div class="col-2">
-                                                    <a data-bs-toggle="modal" data-bs-target="@($"#editModal{counter}")" class="reply rounded">Edit</a>
+                                                    <button data-bs-toggle="modal" data-bs-target="@($"#editModal{counter}")" class="reply rounded border-0">Edit</button>
                                                 </div>
                                             }
                                             else
                                             {
                                                 <div class="col-2">
-                                                    <a href="#" class="reply rounded">Reply</a>
+                                                    <button href="#" class="reply rounded border-0">Reply</button>
                                                 </div>
                                             }
 
@@ -121,14 +121,14 @@
                                                 <span hidden>@(comment.ModeratedBody = comment.Body)</span>
                                                 <div class="col-2">
                                                     @* <button class="btn btn-dark fw-bold btn-block" data-bs-toggle="modal" data-bs-target="@($"#moderateModal{counter}")">Moderate</button> *@
-                                                    <a class="reply rounded" data-bs-toggle="modal" data-bs-target="@($"#moderateModal{counter}")">Moderate</a>
+                                                    <button class="reply rounded border-0" data-bs-toggle="modal" data-bs-target="@($"#moderateModal{counter}")">Moderate</button>
                                                 </div>
                                                 <div class="col-2">
                                                     <form asp-action="Delete" asp-controller="Comments">
                                                         @Html.Hidden("Id",comment.Id)
                                                         @Html.Hidden("Slug",comment.Post.Slug)
                                                         @* <button class="btn-sm btn-dark fw-bold btn-block">Delete</button> *@
-                                                        <a class="reply rounded">Delete</a>
+                                                        <button type="submit" class="reply rounded border-0">Delete</button>
                                                     </form>
                                                 </div>
                                             }
@@ -148,13 +148,13 @@
                                                             @Html.Hidden("Id",comment.Id)
                                                             <div class="form-group">
                                                                 <textarea name="Body" class="form-control" required>@comment.Body</textarea>
-                                                                <button type="submit" class="btn-sm btn-dark border-success fw-bold">Update</button>
+                                                                <button type="submit" class="reply rounded border-1">Update</button>
                                                             </div>
                                                         </form>
                                                     </div>
                                                     <!-- Modal Footer -->
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn-sm btn-dark fw-bold" data-bs-dismiss="modal">Cancel</button>
+                                                        <button type="button" class="reply rounded border-1" data-bs-dismiss="modal">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -168,8 +168,8 @@
                                                         <h4 class="modal-title">Moderating Comment...</h4>
                                                     </div>
                                                     <!-- Modal Body -->
-                                                    <div class="modal-body">
-                                                        <form asp-action="Moderate" asp-controller="Comments">
+                                                    <form asp-action="Moderate" asp-controller="Comments">
+                                                        <div class="modal-body">
                                                             @Html.Hidden("Id",comment.Id)
                                                             @Html.Hidden("Body",comment.Body)
                                                             <!-- Original Comment -->
@@ -186,24 +186,15 @@
                                                             <div class="form-group">
                                                                 <label class="control-label">Reason for Moderation</label>
                                                                 <select class="form-control" asp-for="@comment.ModerationType" name="ModerationType" asp-items="Html.GetEnumSelectList<ModerationType>()"></select>
+                                                                <button class="reply rounded border-1" type="submit">Save Changes</button>
                                                             </div>
+                                                        </div>
+                                                        <!-- Modal Footer -->
+                                                        <div class="modal-footer">
                                                             <!-- Buttons -->
-                                                            <div class="form-group">
-                                                                <div class="row">
-                                                                    <div class="col">
-                                                                        <button class="btn-sm btn-block btn-dark border-success fw-bold" type="submit">Save Changes</button>
-                                                                    </div>
-                                                                    <div class="col">
-                                                                        <button class="btn-sm btn-block btn-dark fw-bold" type="button" data-bs-dismiss="modal">Cancel</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    <!-- Modal Footer -->
-                                                    <div class="modal-footer">
-
-                                                    </div>
+                                                            <button class="reply rounded border-1" type="button" data-bs-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

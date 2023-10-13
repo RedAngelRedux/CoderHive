@@ -35,6 +35,8 @@ namespace CoderHive.Controllers
             return View("Index", originalComments);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult>Moderate(int id, [Bind("Id,Body,ModeratedBody,ModerationType")] Comment comment)
         {
             if(id != comment.Id)
@@ -191,7 +193,7 @@ namespace CoderHive.Controllers
         // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string slug)
         {
             if (_context.Comments == null)
             {
@@ -204,7 +206,8 @@ namespace CoderHive.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Posts", new { slug }, "commentSectino");
         }
 
         private bool CommentExists(int id)
