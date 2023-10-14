@@ -32,32 +32,34 @@
     <div class="container">
         <div class="row posts-entry">
             <div class="col-lg-8">
-                @foreach( var post in Model.Posts ) {
-                <div class="blog-entry d-flex blog-entry-search-item">
-                    <a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="img-link me-4">
-                        <img src="@imageService.DecodeImage(post.ImageData,post.ImageType)" alt="Image" class="img-fluid">
-                    </a>
-                    <div>
-                        <span class="date">@post.Updated &bullet; <a href="#">Business</a></span>
-                        <h2><a asp-controller="Posts" asp-action="Details" asp-route-id="1">@post.PostTitle</a></h2>
-                        <p>@post.Abstract</p>
-                        <p><a asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug" class="btn btn-sm btn-outline-primary">Read More</a></p>
-                        <ul class="tags">
-                        @foreach(var tag in post.Tags)
-                        {
-                            var tagText = (tag.Text is null) ? "" : tag.Text.ToLower();
-                            <li> <a asp-action="TagIndex" asp-route-tag="@tagText">#@tagText</a></li>
-                        }
-                        </ul>                      
-                    </div>                    
-                </div>
+                @foreach (var post in Model.Posts)
+                {
+                    <div class="blog-entry d-flex blog-entry-search-item">
+                        <a asp-controller="Posts" asp-action="Details" asp-route-id="1" class="img-link me-4">
+                            <img src="@imageService.DecodeImage(post.ImageData,post.ImageType)" alt="Image" class="img-fluid">
+                        </a>
+                        <div>
+                            <span class="date">@post.Updated &bullet; <a href="#">Business</a></span>
+                            <h2><a asp-controller="Posts" asp-action="Details" asp-route-id="1">@post.PostTitle</a></h2>
+                            <p>@post.Abstract</p>
+                            <p><a asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug" class="btn btn-sm btn-outline-primary">Read More</a></p>
+                            <ul class="tags">
+                                @foreach (var tag in post.Tags)
+                                {
+                                    var tagText = (tag.Text is null) ? "" : tag.Text.ToLower();
+                                    <li> <a asp-action="TagIndex" asp-route-tag="@tagText">#@tagText</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
                 }
-                @if(Model.BlogId is not null)
+
+                @if (Model.BlogId is not null)
                 {
                     <div class="row text-start pt-5 border-top">
                         <div class="col-md-12">
                             <div class="custom-pagination">
-                              @Html.PagedListPager(Model.Posts, page => Url.Action("Index", new { page = page , id = Model.BlogId }));                                
+                                @Html.PagedListPager(Model.Posts, page => Url.Action("Index", new { page = page , id = Model.BlogId }));
                             </div>
                         </div>
                     </div>
@@ -125,72 +127,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*Original Scaffolded Code*@
-
-@* <h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PostTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Abstract)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PostTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Abstract)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td></td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@
