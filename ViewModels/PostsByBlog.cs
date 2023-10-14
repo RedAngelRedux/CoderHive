@@ -18,6 +18,7 @@ namespace CoderHive.ViewModels
         public byte[]? BlogImageData { get; set; }
         public string? BlogImageType {  get; set; }
         public string? SearchTerm { get; set; } = null;
+        public string? SearchAction { get; set; } = null;
         public IPagedList<Post>? Posts { get; set; }
     }
 }

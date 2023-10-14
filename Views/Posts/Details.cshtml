@@ -46,7 +46,7 @@
                     @foreach (var tag in Model.Tags)
                     {
                         var tagText = (tag.Text is null) ? "" : tag.Text.ToLower();
-                        <li> <a asp-action="TagIndex" asp-route-tag="@tagText">#@tagText</a></li>
+                        <li> <a asp-controller="Posts" asp-action="SearchAllPostsByTag" asp-route-searchTerm="@tagText">#@tagText</a></li>
                     }
                 </ul>
 

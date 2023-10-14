@@ -2,6 +2,7 @@
 using CoderHive.Enums;
 using CoderHive.Models;
 using MailKit.Search;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoderHive.Services
@@ -39,6 +40,16 @@ namespace CoderHive.Services
 
             // This orders the remaining records (either all or searchTerm filtered)
             return posts.OrderByDescending(p => p.Created); 
+        }
+
+        public IQueryable<Post> SearchByTag(string searchTerm) {
+
+            var matchingTags = _context.Tags.Where(t => t.Text == searchTerm).AsQueryable();
+
+            var postIds = matchingTags.Select(t =>  t.PostId).ToList();
+
+            return _context.Posts.Where(p => postIds.Contains(p.Id)).Include(t => t.Tags).AsQueryable().OrderByDescending(p => p.Created);
+
         }
     }
 }

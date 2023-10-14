@@ -32,17 +32,39 @@ namespace CoderHive.Controllers
 
         public async Task<IActionResult> SearchAllPostsIndex(int? page, string searchTerm)
         {
+            // Redirect to Tag Search, if User is Searching by Tag
+            if (!String.IsNullOrEmpty(searchTerm) && searchTerm.IndexOf("#") == 0) return RedirectToAction("SearchAllPostsByTag", new { page, searchTerm = searchTerm.Substring(1) });
+
             var postByBlog = new PostsByBlog{SearchTerm = searchTerm};
 
             var pageNumber = page ?? 1;
-            var pageSize = 2;
+            var pageSize = 12;
 
             var posts = _blogSearchService.Search(searchTerm);
 
             postByBlog.Posts = await posts.ToPagedListAsync(pageNumber, pageSize);
 
+            postByBlog.SearchAction = "SearchAllPostsIndex";
+
             //return View(postByBlog);
             return View("Index",postByBlog);
+        }
+
+        public async Task<IActionResult> SearchAllPostsByTag(int? page, string searchTerm)
+        {
+            var postByBlog = new PostsByBlog { SearchTerm = searchTerm };
+
+            var pageNumber = page ?? 1;
+            var pageSize = 12;
+
+            var posts = _blogSearchService.SearchByTag(searchTerm);
+
+            postByBlog.Posts = await posts.ToPagedListAsync(pageNumber, pageSize);
+
+            postByBlog.SearchAction = "SearchAllPostsByTag";
+
+            //return View(postByBlog);
+            return View("Index", postByBlog);
         }
 
         // GET: Posts/Index/1
@@ -58,7 +80,7 @@ namespace CoderHive.Controllers
                 _context.Posts.Where(p => p.BlogId == id && p.Status == PostStatus.ProductionReady)
                 .Include(p => p.Author)
                 .Include(p => p.Blog)
-                .Include(p => p.Tags).ToPagedListAsync(page ?? 1, 2);
+                .Include(p => p.Tags).ToPagedListAsync(page ?? 1, 6);
 
             postsByBlog.BlogTitle = (blog is not null) ? blog.Name : "No Blog Name Specified";
             postsByBlog.BlogId = (blog is not null) ? blog.Id : 1;
