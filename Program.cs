@@ -4,17 +4,43 @@ using CoderHive.Services;
 using CoderHive.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Configuration;
+using Npgsql;
 using TheBlogProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// Acquire or Build the Connection String Depending on Runtime Environment
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-var connectionString = (string.IsNullOrEmpty(databaseUrl))
-    ? builder.Configuration.GetConnectionString("DefaultConnection")
-    : builder.Configuration.GetConnectionString("CoderHiveHeroku");
+string? connectionString;
+
+//= (string.IsNullOrEmpty(databaseUrl)) {
+//    builder.Configuration.GetConnectionString("DefaultConnection");
+//}
+
+if(string.IsNullOrEmpty(databaseUrl) == true)
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+}
+else
+{
+    var databaseURI = new Uri("postgres://oswnaycnzmksbp:73a1d926d1f508a8b235b62cc3df951d7feae0ff7228ad232d8f5c9f6c33924e@ec2-34-236-199-229.compute-1.amazonaws.com:5432/d19grhiv4vn87\r\n");
+    var userInfo = databaseURI.UserInfo.Split(':');
+
+    connectionString = new NpgsqlConnectionStringBuilder()
+    {
+        Host = databaseURI.Host,
+        Port = databaseURI.Port,
+        Username = userInfo[0],
+        Password = userInfo[1],
+        Database = databaseURI.LocalPath.TrimStart('/'),
+        SslMode = SslMode.Prefer,
+        TrustServerCertificate = true
+    }.ToString();
+
+    //builder.Configuration.GetConnectionString("CoderHiveHeroku");
+}    
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options =>
 //    options.UseSqlServer(connectionString));
