@@ -37,14 +37,14 @@
 			{
 			<div class="col-lg-4">
 				<div class="card border-0">
-					<div class="card-body">
+						<div class="card-body">
 							<a asp-controller="Posts" asp-action="Index" asp-route-id="@blog.Id" class="h-entry mb-30 v-height gradient">
 								<div class="featured-img opacity-75" style="background-image: url('@imageService.DecodeImage(blog.ImageData,blog.ImageType)');"></div>
 
  								<div class="text">
 									@* <span class="date">Apr. 14th, 2022</span> *@
-									<h2>AI can now kill those annoying cookie pop-ups</h2>
-						</div>
+									<h2>@blog.Name</h2>
+								</div>
  							</a>
 							<div class="excerpt">
 								<div class="post-meta align-items-center text-left clearfix">
