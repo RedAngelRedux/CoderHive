@@ -15,10 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 string? connectionString;
 
-//= (string.IsNullOrEmpty(databaseUrl)) {
-//    builder.Configuration.GetConnectionString("DefaultConnection");
-//}
-
 if(string.IsNullOrEmpty(databaseUrl) == true)
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -38,16 +34,14 @@ else
         SslMode = SslMode.Prefer,
         TrustServerCertificate = true
     }.ToString();
-
-    //builder.Configuration.GetConnectionString("CoderHiveHeroku");
 }    
-
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString));
 
 // Replace Default Reference to SQL Server with our Postgres Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(connectionString));
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
